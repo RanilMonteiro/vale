@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise for You ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-pink: #ff85a1;
+            --dark-pink: #ff4d6d;
+            --soft-bg: #ffeef2;
+        }
+
+        body {
+            background-color: var(--soft-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Envelope Styles */
+        .envelope {
+            font-size: 80px;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .envelope:hover { transform: scale(1.2); }
+
+        /* Game Styles */
+        #game-area {
+            width: 100%;
+            height: 250px;
+            background: #fff0f3;
+            border: 2px dashed var(--primary-pink);
+            border-radius: 15px;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .heart-target {
+            position: absolute;
+            font-size: 30px;
+            cursor: pointer;
+            user-select: none;
+            animation: float 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        /* Button Styles */
+        .btn-container {
+            margin-top: 20px;
+            height: 100px; /* Space for the runaway button */
+            position: relative;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        #yesBtn {
+            background-color: var(--dark-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        #noBtn {
+            background-color: #ced4da;
+            color: #495057;
+            position: absolute;
+        }
+
+        h1 { color: var(--dark-pink); font-size: 1.5rem; }
+        p { color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="screen1">
+            <div class="envelope" onclick="goToGame()">💌</div>
+            <h1>You have a secret message!</h1>
+            <p>Click the envelope to open it...</p>
+        </div>
+
+        <div id="screen2" class="hidden">
+            <h1>Catch the Hearts! ❤️</h1>
+            <p>Catch 5 hearts to unlock your message</p>
+            <div id="game-area"></div>
+            <div id="score-display">Hearts caught: 0 / 5</div>
+        </div>
+
+        <div id="screen3" class="hidden">
+            <h1>Will you be my Valentine? 💖</h1>
+            <p>I promise it'll be amazing!</p>
+            <div class="btn-container">
+                <button id="yesBtn" onclick="celebrate()">YES!</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+
+        <div id="screen4" class="hidden">
+            <h1 style="font-size: 2.5rem;">YAY! 😍</h1>
+            <p>I can't wait to spend the day with you!</p>
+            <div style="font-size: 50px;">💖✨🌹</div>
+        </div>
+    </div>
+
+    <script>
+        let heartsCaught = 0;
+        const totalNeeded = 5;
+
+        // Transition to Game
+        function goToGame() {
+            document.getElementById('screen1').classList.add('hidden');
+            document.getElementById('screen2').classList.remove('hidden');
+            spawnHeart();
+        }
+
+        // Heart Game Logic
+        function spawnHeart() {
+            const gameArea = document.getElementById('game-area');
+            const heart = document.createElement('div');
+            heart.className = 'heart-target';
+            heart.innerHTML = '❤️';
+            
+            // Random position
+            const x = Math.random() * (gameArea.clientWidth - 40);
+            const y = Math.random() * (gameArea.clientHeight - 40);
+            
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            heart.onclick = () => {
+                heartsCaught++;
+                document.getElementById('score-display').innerText = `Hearts caught: ${heartsCaught} / ${totalNeeded}`;
+                gameArea.removeChild(heart);
+                
+                if (heartsCaught < totalNeeded) {
+                    spawnHeart();
+                } else {
+                    goToProposal();
+                }
+            };
+
+            gameArea.appendChild(heart);
+        }
+
+        // Transition to Proposal
+        function goToProposal() {
+            document.getElementById('screen2').classList.add('hidden');
+            document.getElementById('screen3').classList.remove('hidden');
+        }
+
+        // The "Runaway" No Button
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', () => {
+            // Move the button to a random position within the window
+            const newX = Math.random() * (window.innerWidth - noBtn.clientWidth);
+            const newY = Math.random() * (window.innerHeight - noBtn.clientHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+        });
+
+        // Final Celebration
+        function celebrate() {
+            document.getElementById('screen3').classList.add('hidden');
+            document.getElementById('screen4').classList.remove('hidden');
+            
+            // Confetti Blast!
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
