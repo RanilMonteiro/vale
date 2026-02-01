@@ -139,22 +139,20 @@
     <script>
         let heartsCaught = 0;
         const totalNeeded = 5;
+        let noCount = 0; // Track how many times she tried to say No
 
-        // Transition to Game
         function goToGame() {
             document.getElementById('screen1').classList.add('hidden');
             document.getElementById('screen2').classList.remove('hidden');
             spawnHeart();
         }
 
-        // Heart Game Logic
         function spawnHeart() {
             const gameArea = document.getElementById('game-area');
             const heart = document.createElement('div');
             heart.className = 'heart-target';
             heart.innerHTML = '❤️';
             
-            // Random position
             const x = Math.random() * (gameArea.clientWidth - 40);
             const y = Math.random() * (gameArea.clientHeight - 40);
             
@@ -172,34 +170,52 @@
                     goToProposal();
                 }
             };
-
             gameArea.appendChild(heart);
         }
 
-        // Transition to Proposal
         function goToProposal() {
             document.getElementById('screen2').classList.add('hidden');
             document.getElementById('screen3').classList.remove('hidden');
         }
 
-        // The "Runaway" No Button
         const noBtn = document.getElementById('noBtn');
-        noBtn.addEventListener('mouseover', () => {
-            // Move the button to a random position within the window
-            const newX = Math.random() * (window.innerWidth - noBtn.clientWidth);
-            const newY = Math.random() * (window.innerHeight - noBtn.clientHeight);
+
+        // This function handles the "Escape" logic
+        const moveButton = (e) => {
+            // Prevent the actual click/tap from happening
+            e.preventDefault();
+
+            noCount++;
+            
+            // Randomize position within the visible screen
+            const padding = 20;
+            const newX = Math.random() * (window.innerWidth - noBtn.clientWidth - padding);
+            const newY = Math.random() * (window.innerHeight - noBtn.clientHeight - padding);
             
             noBtn.style.position = 'fixed';
             noBtn.style.left = newX + 'px';
             noBtn.style.top = newY + 'px';
-        });
+            noBtn.style.zIndex = "999";
 
-        // Final Celebration
+            // Add a little sassy message after 3 attempts
+            if (noCount === 3) {
+                document.querySelector('#screen3 p').innerText = "Wait... are you trying to click No? 😂";
+            }
+            if (noCount === 6) {
+                document.querySelector('#screen3 p').innerText = "Okay, now you're just being difficult! ❤️";
+            }
+        };
+
+        // Listen for Mouse Hover (Laptop)
+        noBtn.addEventListener('mouseover', moveButton);
+
+        // Listen for Taps (Mobile) - prevents the click and moves it instead
+        noBtn.addEventListener('touchstart', moveButton);
+
         function celebrate() {
             document.getElementById('screen3').classList.add('hidden');
             document.getElementById('screen4').classList.remove('hidden');
             
-            // Confetti Blast!
             var duration = 5 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
