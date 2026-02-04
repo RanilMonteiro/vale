@@ -3,230 +3,1100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Surprise for You ❤️</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>Outgo | Your Gauteng Insider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-pink: #ff85a1;
-            --dark-pink: #ff4d6d;
-            --soft-bg: #ffeef2;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #080808; 
+            color: white; 
+            overflow-x: hidden;
+        }
+        .heading { font-family: 'Space Grotesk', sans-serif; }
+        
+        .main-gradient {
+            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #080808 100%);
+            min-height: 100vh;
         }
 
-        body {
-            background-color: var(--soft-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
+        .input-glow:focus-within {
+            box-shadow: 0 0 40px rgba(255, 95, 0, 0.15);
+            border-color: rgba(255, 95, 0, 0.5);
         }
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
-            position: relative;
+        .reveal-card {
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .hidden { display: none !important; }
-
-        /* Envelope Styles */
-        .envelope {
-            font-size: 80px;
-            cursor: pointer;
-            display: inline-block;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .floating { 
+            animation: float 6s ease-in-out infinite; 
+        }
+        
+        @keyframes float { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-10px); } 
         }
 
-        .envelope:hover { transform: scale(1.2); }
-
-        /* Game Styles */
-        #game-area {
-            width: 100%;
-            height: 250px;
-            background: #fff0f3;
-            border: 2px dashed var(--primary-pink);
-            border-radius: 15px;
-            position: relative;
-            margin: 20px 0;
-            overflow: hidden;
+        .slide-up {
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .heart-target {
-            position: absolute;
-            font-size: 30px;
-            cursor: pointer;
-            user-select: none;
-            animation: float 1s ease-in-out infinite alternate;
+        .typing-indicator span {
+            animation: typingDot 1.4s infinite both;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: .2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: .4s;
+        }
+        @keyframes typingDot {
+            0%, 80%, 100% { opacity: .3; transform: translateY(0); }
+            40% { opacity: 1; transform: translateY(-3px); }
         }
 
-        @keyframes float {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* Button Styles */
-        .btn-container {
-            margin-top: 20px;
-            height: 100px; /* Space for the runaway button */
-            position: relative;
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        button {
-            padding: 12px 25px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
+        .scale-in {
+            animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        #yesBtn {
-            background-color: var(--dark-pink);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        /* Smooth transitions */
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        #noBtn {
-            background-color: #ced4da;
-            color: #495057;
-            position: absolute;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 95, 0, 0.5);
+            border-radius: 3px;
         }
 
-        h1 { color: var(--dark-pink); font-size: 1.5rem; }
-        p { color: #666; }
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar { 
+            display: none; 
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Glass effect */
+        .glass {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ff5f00 0%, #ff9500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hover effects */
+        .hover-lift {
+            transition: transform 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .mobile-padding {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
     </style>
 </head>
-<body>
-
-    <div class="container">
-        <div id="screen1">
-            <div class="envelope" onclick="goToGame()">💌</div>
-            <h1>You have a secret message!</h1>
-            <p>Click the envelope to open it...</p>
+<body class="main-gradient h-screen flex flex-col items-center justify-center overflow-hidden">
+    <!-- Navigation -->
+    <nav class="w-full absolute top-0 p-4 md:p-8 flex justify-between items-center z-50 mobile-padding">
+        <div class="heading text-xl md:text-2xl font-bold tracking-tighter text-white">OUTGO<span class="text-orange-600">.</span></div>
+        <div class="flex items-center gap-3 md:gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full pulse"></span>
+                <span class="text-[10px] tracking-[0.1em] md:tracking-[0.2em] font-bold text-zinc-500 uppercase">Live in Gauteng</span>
+            </div>
+            <button onclick="showAbout()" class="text-xs font-medium border border-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-full hover:bg-white hover:text-black transition flex items-center gap-2 hover-lift">
+                <i class="fas fa-info-circle"></i>
+                <span class="hidden md:inline">About</span>
+            </button>
         </div>
+    </nav>
 
-        <div id="screen2" class="hidden">
-            <h1>Catch the Hearts! ❤️</h1>
-            <p>Catch 5 hearts to unlock your message</p>
-            <div id="game-area"></div>
-            <div id="score-display">Hearts caught: 0 / 5</div>
-        </div>
+    <!-- CENTERED Main Content Area -->
+    <div class="w-full flex-1 flex flex-col items-center justify-center px-4 md:px-6">
+        <!-- Search Interface -->
+        <div id="search-interface" class="w-full max-w-2xl text-center space-y-6 md:space-y-8 slide-up">
+            <div class="space-y-4 md:space-y-6">
+                <h1 id="main-prompt" class="heading text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight gradient-text">
+                    What's the move?
+                </h1>
+                <p id="sub-prompt" class="text-zinc-400 text-base md:text-lg lg:text-xl font-light max-w-xl mx-auto">
+                    I know every spot in Gauteng. Ask naturally—like you're asking a friend.
+                </p>
+            </div>
 
-        <div id="screen3" class="hidden">
-            <h1>Will you be my Valentine? 💖</h1>
-            <p>I promise it'll be amazing!</p>
-            <div class="btn-container">
-                <button id="yesBtn" onclick="celebrate()">YES!</button>
-                <button id="noBtn">No</button>
+            <!-- Centered Input Container -->
+            <div class="relative z-10">
+                <div class="input-glow flex items-center bg-zinc-900/70 glass border border-white/10 rounded-[20px] md:rounded-[28px] p-2 transition-all duration-300 hover:border-orange-500/30">
+                    <input id="user-input" type="text" 
+                        placeholder="Try: 'date night in Bedfordview' or 'budget drinks Sandton'"
+                        class="flex-1 bg-transparent border-none outline-none px-4 md:px-6 py-3 md:py-4 text-base md:text-lg font-light placeholder:text-zinc-500 placeholder:font-light"
+                        autocomplete="off">
+                    <button onclick="processSearch()" class="ml-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white h-10 w-10 md:h-12 md:w-12 rounded-[16px] md:rounded-[20px] font-bold hover:from-orange-500 hover:to-amber-500 transition-all flex items-center justify-center hover-lift active:scale-95">
+                        <i class="fas fa-paper-plane text-sm md:text-base"></i>
+                    </button>
+                </div>
+                
+                <!-- Quick Suggestions -->
+                <div class="flex justify-center gap-2 md:gap-3 mt-4 flex-wrap">
+                    <button onclick="quickSearch('Chill rooftop Rosebank')" class="text-xs md:text-sm text-zinc-400 hover:text-orange-400 transition px-3 py-1.5 rounded-full bg-zinc-900/50 hover:bg-zinc-800/70 border border-zinc-800/50 hover:border-orange-500/30 smooth-transition hover-lift">
+                        <i class="fas fa-building mr-1.5"></i>Rooftop
+                    </button>
+                    <button onclick="quickSearch('Date night romantic')" class="text-xs md:text-sm text-zinc-400 hover:text-pink-400 transition px-3 py-1.5 rounded-full bg-zinc-900/50 hover:bg-zinc-800/70 border border-zinc-800/50 hover:border-pink-500/30 smooth-transition hover-lift">
+                        <i class="fas fa-heart mr-1.5"></i>Date Night
+                    </button>
+                    <button onclick="quickSearch('Happy Hour now')" class="text-xs md:text-sm text-zinc-400 hover:text-green-400 transition px-3 py-1.5 rounded-full bg-zinc-900/50 hover:bg-zinc-800/70 border border-zinc-800/50 hover:border-green-500/30 smooth-transition hover-lift">
+                        <i class="fas fa-glass-cheers mr-1.5"></i>Happy Hour
+                    </button>
+                    <button onclick="quickSearch('Budget under R150')" class="text-xs md:text-sm text-zinc-400 hover:text-amber-400 transition px-3 py-1.5 rounded-full bg-zinc-900/50 hover:bg-zinc-800/70 border border-zinc-800/50 hover:border-amber-500/30 smooth-transition hover-lift">
+                        <i class="fas fa-wallet mr-1.5"></i>Budget
+                    </button>
+                </div>
+
+                <!-- Example Queries -->
+                <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-zinc-800/50">
+                    <p class="text-xs text-zinc-500 mb-3">Try asking like this:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-md mx-auto">
+                        <button onclick="setInput('Where can I watch rugby in Pretoria?')" class="text-xs px-3 py-2 rounded-lg bg-zinc-900/30 hover:bg-zinc-800/50 border border-zinc-800/30 text-zinc-400 hover:text-white transition text-left smooth-transition hover-lift">
+                            <i class="fas fa-tv mr-2 text-blue-400"></i>
+                            "Watch rugby in Pretoria"
+                        </button>
+                        <button onclick="setInput('Fun activities for 4 people this weekend')" class="text-xs px-3 py-2 rounded-lg bg-zinc-900/30 hover:bg-zinc-800/50 border border-zinc-800/30 text-zinc-400 hover:text-white transition text-left smooth-transition hover-lift">
+                            <i class="fas fa-users mr-2 text-green-400"></i>
+                            "Fun for 4 people"
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="screen4" class="hidden">
-            <h1 style="font-size: 2.5rem;">YAY! 😍</h1>
-            <p>I can't wait to spend the day with you!</p>
-            <div style="font-size: 50px;">💖✨🌹</div>
+        <!-- Results Interface -->
+        <div id="results-interface" class="hidden w-full max-w-4xl h-full overflow-y-auto no-scrollbar pt-4 md:pt-8">
+            <!-- Results will be dynamically inserted here -->
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-black/60 backdrop-blur-sm">
+            <div class="text-center scale-in">
+                <div class="w-16 h-16 rounded-full border-4 border-orange-600 border-t-transparent animate-spin mx-auto mb-4"></div>
+                <p class="text-white text-lg font-medium">Finding the perfect spots...</p>
+                <p class="text-sm text-zinc-400 mt-2">Searching Gauteng's best venues and deals</p>
+                <div class="typing-indicator flex justify-center gap-1 mt-4">
+                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Floating Suggestions (Mobile) -->
+    <div id="mobile-suggestions" class="fixed bottom-20 left-0 right-0 p-4 md:hidden">
+        <div class="flex justify-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="quickSearch('Sandton now')" class="text-xs px-3 py-2 rounded-full bg-zinc-900/80 glass border border-white/10 whitespace-nowrap hover:bg-zinc-800 transition hover-lift">
+                🏙️ Sandton
+            </button>
+            <button onclick="quickSearch('Melville vibes')" class="text-xs px-3 py-2 rounded-full bg-zinc-900/80 glass border border-white/10 whitespace-nowrap hover:bg-zinc-800 transition hover-lift">
+                🎨 Melville
+            </button>
+            <button onclick="quickSearch('Pretoria tonight')" class="text-xs px-3 py-2 rounded-full bg-zinc-900/80 glass border border-white/10 whitespace-nowrap hover:bg-zinc-800 transition hover-lift">
+                🏛️ Pretoria
+            </button>
+        </div>
+    </div>
+
+    <!-- Detailed Result Panel -->
+    <div id="result-panel" class="reveal-card opacity-0 scale-95 pointer-events-none fixed inset-0 flex items-center justify-center p-4 md:p-8 z-30">
+        <div class="w-full max-w-4xl bg-zinc-900/90 glass border border-white/10 rounded-[28px] md:rounded-[40px] p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-10 backdrop-blur-xl">
+            <!-- Left Column - Image/Icon -->
+            <div class="w-full md:w-2/5">
+                <div id="res-img" class="h-48 md:h-80 rounded-[24px] md:rounded-[32px] bg-gradient-to-br from-orange-900/20 to-amber-900/20 border border-orange-800/20 flex items-center justify-center">
+                    <i id="res-icon" class="fas fa-martini-glass-citrus text-6xl md:text-8xl text-orange-500/40"></i>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button onclick="shareCurrentSpot()" class="py-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition flex items-center justify-center gap-2 hover-lift">
+                        <i class="fas fa-share-alt text-blue-400"></i>
+                        <span class="text-sm">Share</span>
+                    </button>
+                    <button onclick="saveCurrentSpot()" class="py-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition flex items-center justify-center gap-2 hover-lift">
+                        <i class="fas fa-bookmark text-amber-400"></i>
+                        <span class="text-sm">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Column - Details -->
+            <div class="flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-4 md:mb-6">
+                    <div>
+                        <h2 id="res-name" class="heading text-2xl md:text-4xl font-bold text-white mb-1">--</h2>
+                        <div class="flex items-center gap-2">
+                            <span id="res-area" class="text-xs md:text-sm px-2 py-1 bg-zinc-800 rounded-full text-zinc-300">--</span>
+                            <span id="res-distance" class="text-xs text-zinc-500">• 15-20 min drive</span>
+                        </div>
+                    </div>
+                    <button onclick="resetUI()" class="text-zinc-500 hover:text-white transition text-xl md:text-2xl hover-lift active:scale-95">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-4 md:mb-6 p-3 md:p-4 rounded-xl bg-gradient-to-r from-amber-900/10 to-amber-800/10 border border-amber-800/20">
+                    <p class="text-amber-400 text-sm md:text-base font-medium mb-1">🔥 Current Deal</p>
+                    <p id="res-deal" class="text-white text-base md:text-lg">--</p>
+                </div>
+                
+                <div class="space-y-4 md:space-y-6 flex-1">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2 flex items-center gap-2">
+                            <i class="fas fa-music"></i>
+                            The Vibe
+                        </p>
+                        <p id="res-vibe" class="text-zinc-300 font-light italic text-base md:text-lg">--</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lightbulb"></i>
+                            Insider Tip
+                        </p>
+                        <p id="res-tip" class="text-zinc-300 leading-relaxed font-light text-base md:text-lg">--</p>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div id="res-extra" class="hidden grid grid-cols-2 gap-4 pt-4 md:pt-6 border-t border-zinc-800/50">
+                        <div>
+                            <p class="text-xs text-zinc-500 mb-1">💰 Price Range</p>
+                            <p id="res-price" class="text-white font-medium">--</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-zinc-500 mb-1">⏰ Best Time</p>
+                            <p id="res-time" class="text-white font-medium">--</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-zinc-500 mb-1">👥 Crowd</p>
+                            <p id="res-crowd" class="text-white font-medium">--</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-zinc-500 mb-1">🎯 Popularity</p>
+                            <p id="res-popularity" class="text-white font-medium">--</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="getDirections()" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white py-3 md:py-4 rounded-xl md:rounded-2xl font-bold mt-6 md:mt-8 transition-all hover-lift active:scale-95 text-base md:text-lg">
+                    <i class="fas fa-directions mr-2"></i> GET DIRECTIONS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="absolute bottom-4 left-4 opacity-10 floating">
+        <div class="text-4xl md:text-6xl font-black text-white/5 uppercase select-none">GAUTENG</div>
+    </div>
+    
+    <div class="absolute top-1/4 right-4 opacity-10 floating" style="animation-delay: 1s;">
+        <div class="text-3xl md:text-5xl font-black text-white/5 uppercase select-none">JOBURG</div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+        <div class="glass rounded-2xl md:rounded-3xl p-6 md:p-8 max-w-md w-full scale-in">
+            <div class="flex justify-between items-start mb-6">
+                <h3 class="heading text-xl md:text-2xl font-bold text-white">About Outgo</h3>
+                <button onclick="hideAbout()" class="text-zinc-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <p class="text-zinc-300 mb-4">
+                Your personal Gauteng insider. I know every rooftop, happy hour, and hidden gem across Joburg, Pretoria, and everywhere in between.
+            </p>
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-orange-600/20 flex items-center justify-center">
+                        <i class="fas fa-bolt text-orange-400"></i>
+                    </div>
+                    <span class="text-sm text-zinc-300">Real-time deals & specials</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-600/20 flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-blue-400"></i>
+                    </div>
+                    <span class="text-sm text-zinc-300">All Gauteng areas covered</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-green-600/20 flex items-center justify-center">
+                        <i class="fas fa-lightbulb text-green-400"></i>
+                    </div>
+                    <span class="text-sm text-zinc-300">Insider tips & local knowledge</span>
+                </div>
+            </div>
+            <button onclick="hideAbout()" class="w-full py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                Got it, let's explore!
+            </button>
         </div>
     </div>
 
     <script>
-        let heartsCaught = 0;
-        const totalNeeded = 5;
-        let noCount = 0; // Track how many times she tried to say No
+        // ===================== ENHANCED GAUTENG DATABASE =====================
+        const gautengDatabase = [
+            {
+                id: 1,
+                name: "SIRCLE",
+                area: "Rosebank",
+                vibe: "Chic, Modern, High-Energy with stunning city views",
+                deal: "2-for-1 Signature Cocktails until 8PM • Sunset specials",
+                tip: "Corner booth #3 has the best Jozi skyline view. Arrive before 6PM for golden hour photos.",
+                price: "R180-280",
+                bestTime: "Weekdays 5-8PM, weekends for sunset",
+                crowd: "Fashion-forward professionals, influencer crowd",
+                tags: ["rooftop", "chic", "cocktails", "view", "trendy", "instagram"],
+                icon: "building",
+                popularity: "92%",
+                distance: "12-18 min"
+            },
+            {
+                id: 2,
+                name: "THE RADIUM",
+                area: "Orange Grove",
+                vibe: "Historical, Authentic Jazz, Old-School Cool",
+                deal: "R50 Draft Specials all night • Live jazz Sundays",
+                tip: "Oldest bar in Joburg. Ask bartender Mark for the secret history tour. Cash only.",
+                price: "R50-100",
+                bestTime: "Weekend afternoons, jazz nights",
+                crowd: "Locals, musicians, history lovers",
+                tags: ["budget", "historical", "jazz", "authentic", "live-music"],
+                icon: "music",
+                popularity: "86%",
+                distance: "20-25 min"
+            },
+            {
+                id: 3,
+                name: "ROCKET ROOFTOP",
+                area: "Sandton",
+                vibe: "Luxury, Exclusive, Panoramic Skyline Views",
+                deal: "2-for-1 Cocktails 4-7PM • Thursday Ladies Night",
+                tip: "Book 2 weeks ahead for weekend sunset spots. Dress code strictly enforced.",
+                price: "R200-350",
+                bestTime: "Weekday happy hours, Friday sunset",
+                crowd: "Finance professionals, luxury seekers",
+                tags: ["rooftop", "luxury", "cocktails", "trendy", "sandton"],
+                icon: "building",
+                popularity: "95%",
+                distance: "15-20 min"
+            },
+            {
+                id: 4,
+                name: "PABLO EGGS-GO-BAR",
+                area: "Melville",
+                vibe: "Creative, Instagrammable, Hidden Garden Oasis",
+                deal: "R50 Cocktails 4-6PM • Breakfast Special R89",
+                tip: "Secret garden out back has the best vibe. Try the espresso martini - it's legendary.",
+                price: "R120-200",
+                bestTime: "Weekend brunch, sunset drinks",
+                crowd: "Artists, students, creative professionals",
+                tags: ["instagram", "brunch", "cocktails", "trendy", "melville", "garden"],
+                icon: "egg",
+                popularity: "94%",
+                distance: "18-22 min"
+            },
+            {
+                id: 5,
+                name: "CAPITAL CRAFT",
+                area: "Pretoria",
+                vibe: "Craft Beer Haven, Social, Sports-Friendly",
+                deal: "Happy Hour 4-6PM (R40 Drafts) • Thursday Trivia Night",
+                tip: "Ask for the secret house cider. Perfect spot for rugby games.",
+                price: "R80-150",
+                bestTime: "After work, sports weekends",
+                crowd: "Beer enthusiasts, sports fans, students",
+                tags: ["beer", "budget", "social", "sports", "pretoria", "craft"],
+                icon: "beer-mug-empty",
+                popularity: "88%",
+                distance: "25-30 min"
+            }
+        ];
 
-        function goToGame() {
-            document.getElementById('screen1').classList.add('hidden');
-            document.getElementById('screen2').classList.remove('hidden');
-            spawnHeart();
-        }
-
-        function spawnHeart() {
-            const gameArea = document.getElementById('game-area');
-            const heart = document.createElement('div');
-            heart.className = 'heart-target';
-            heart.innerHTML = '❤️';
-            
-            const x = Math.random() * (gameArea.clientWidth - 40);
-            const y = Math.random() * (gameArea.clientHeight - 40);
-            
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
-
-            heart.onclick = () => {
-                heartsCaught++;
-                document.getElementById('score-display').innerText = `Hearts caught: ${heartsCaught} / ${totalNeeded}`;
-                gameArea.removeChild(heart);
+        // ===================== ENHANCED NLP PROCESSOR =====================
+        class EnhancedNLP {
+            constructor() {
+                this.areas = {
+                    'sandton': ['sandton', 'financial district', 'business district'],
+                    'melville': ['melville', '7th street', 'bohemian'],
+                    'rosebank': ['rosebank', 'keyes', 'mall'],
+                    'pretoria': ['pretoria', 'pta', 'hatfield', 'brooklyn', 'menlyn'],
+                    'bedfordview': ['bedfordview', 'bedford view'],
+                    'fourways': ['fourways', 'design quarter'],
+                    'randburg': ['randburg', 'brightwater'],
+                    'alberton': ['alberton', 'east rand'],
+                    'edenvale': ['edenvale', 'east rand']
+                };
                 
-                if (heartsCaught < totalNeeded) {
-                    spawnHeart();
-                } else {
-                    goToProposal();
+                this.vibes = {
+                    'chill': ['chill', 'relax', 'quiet', 'peaceful', 'lowkey', 'casual'],
+                    'romantic': ['date', 'romantic', 'dinner', 'couple', 'intimate', 'anniversary'],
+                    'party': ['party', 'turn up', 'club', 'dance', 'vibey', 'loud'],
+                    'budget': ['cheap', 'budget', 'affordable', 'inexpensive', 'under', 'save'],
+                    'luxury': ['luxury', 'fancy', 'expensive', 'premium', 'upscale'],
+                    'trendy': ['trendy', 'instagram', 'popular', 'hot', 'viral']
+                };
+                
+                this.activities = {
+                    'drinks': ['drinks', 'cocktails', 'bar', 'beer', 'wine', 'happy hour'],
+                    'food': ['food', 'restaurant', 'eat', 'dinner', 'lunch', 'brunch'],
+                    'music': ['live music', 'dj', 'band', 'concert', 'music', 'jazz'],
+                    'view': ['rooftop', 'view', 'sunset', 'terrace', 'scenic'],
+                    'sports': ['sports', 'game', 'watch', 'rugby', 'cricket']
+                };
+            }
+            
+            analyze(query) {
+                const lowerQuery = query.toLowerCase();
+                
+                return {
+                    locations: this.extractLocations(lowerQuery),
+                    budget: this.extractBudget(lowerQuery),
+                    vibes: this.extractVibes(lowerQuery),
+                    activities: this.extractActivities(lowerQuery),
+                    time: this.extractTime(lowerQuery),
+                    group: this.extractGroup(lowerQuery),
+                    rawQuery: query
+                };
+            }
+            
+            extractLocations(query) {
+                const found = [];
+                for (const [area, keywords] of Object.entries(this.areas)) {
+                    if (keywords.some(keyword => query.includes(keyword))) {
+                        found.push(area.charAt(0).toUpperCase() + area.slice(1));
+                    }
                 }
-            };
-            gameArea.appendChild(heart);
-        }
-
-        function goToProposal() {
-            document.getElementById('screen2').classList.add('hidden');
-            document.getElementById('screen3').classList.remove('hidden');
-        }
-
-        const noBtn = document.getElementById('noBtn');
-
-        // This function handles the "Escape" logic
-        const moveButton = (e) => {
-            // Prevent the actual click/tap from happening
-            e.preventDefault();
-
-            noCount++;
-            
-            // Randomize position within the visible screen
-            const padding = 20;
-            const newX = Math.random() * (window.innerWidth - noBtn.clientWidth - padding);
-            const newY = Math.random() * (window.innerHeight - noBtn.clientHeight - padding);
-            
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = newX + 'px';
-            noBtn.style.top = newY + 'px';
-            noBtn.style.zIndex = "999";
-
-            // Add a little sassy message after 3 attempts
-            if (noCount === 3) {
-                document.querySelector('#screen3 p').innerText = "Wait... are you trying to click No? 😂";
+                return found;
             }
-            if (noCount === 6) {
-                document.querySelector('#screen3 p').innerText = "Okay, now you're just being difficult! ❤️";
-            }
-        };
-
-        // Listen for Mouse Hover (Laptop)
-        noBtn.addEventListener('mouseover', moveButton);
-
-        // Listen for Taps (Mobile) - prevents the click and moves it instead
-        noBtn.addEventListener('touchstart', moveButton);
-
-        function celebrate() {
-            document.getElementById('screen3').classList.add('hidden');
-            document.getElementById('screen4').classList.remove('hidden');
             
-            var duration = 5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
-            }, 250);
+            extractBudget(query) {
+                const patterns = [
+                    { regex: /(under|less than|below|max|budget)\s*(R?\s*\d+)/i, type: 'max' },
+                    { regex: /(R?\s*\d+)\s*[-to]+\s*(R?\s*\d+)/i, type: 'range' },
+                    { regex: /cheap|affordable|inexpensive|budget/i, type: 'budget' },
+                    { regex: /expensive|luxury|premium|high end/i, type: 'luxury' }
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = query.match(pattern.regex);
+                    if (match) {
+                        if (pattern.type === 'range') {
+                            return {
+                                type: 'range',
+                                min: parseInt(match[1].replace(/[^0-9]/g, '')),
+                                max: parseInt(match[2].replace(/[^0-9]/g, ''))
+                            };
+                        } else if (pattern.type === 'max') {
+                            return {
+                                type: 'max',
+                                amount: parseInt(match[2]?.replace(/[^0-9]/g, '') || 200)
+                            };
+                        } else {
+                            return { type: pattern.type };
+                        }
+                    }
+                }
+                return null;
+            }
+            
+            extractVibes(query) {
+                const vibes = [];
+                for (const [vibe, keywords] of Object.entries(this.vibes)) {
+                    if (keywords.some(keyword => query.includes(keyword))) {
+                        vibes.push(vibe);
+                    }
+                }
+                return vibes;
+            }
+            
+            extractActivities(query) {
+                const activities = [];
+                for (const [activity, keywords] of Object.entries(this.activities)) {
+                    if (keywords.some(keyword => query.includes(keyword))) {
+                        activities.push(activity);
+                    }
+                }
+                return activities;
+            }
+            
+            extractTime(query) {
+                if (query.includes('tonight') || query.includes('this evening')) return 'tonight';
+                if (query.includes('weekend') || query.includes('saturday') || query.includes('sunday')) return 'weekend';
+                if (query.includes('now') || query.includes('right now')) return 'now';
+                if (query.includes('lunch')) return 'lunch';
+                if (query.includes('brunch')) return 'brunch';
+                if (query.includes('after work')) return 'evening';
+                return null;
+            }
+            
+            extractGroup(query) {
+                if (query.includes('solo') || query.includes('alone')) return 'solo';
+                if (query.includes('couple') || query.includes('date')) return 'couple';
+                if (query.includes('group') || query.includes('friends') || query.includes('4 people') || query.includes('3 people')) return 'group';
+                if (query.includes('family') || query.includes('kids')) return 'family';
+                return null;
+            }
+            
+            generateResponse(analysis, results) {
+                let response = "🇿🇦 ";
+                
+                if (analysis.locations.length > 0) {
+                    response += `For <span class="text-orange-400">${analysis.locations.join(' & ')}</span>, `;
+                }
+                
+                if (analysis.vibes.length > 0) {
+                    response += `looking for something <span class="text-amber-400">${analysis.vibes.join('/')}</span>, `;
+                }
+                
+                if (results.length === 1) {
+                    response += `I found the <span class="text-green-400">perfect spot</span> for you.`;
+                } else if (results.length > 1) {
+                    response += `I found <span class="text-green-400">${results.length} great options</span> that match.`;
+                } else {
+                    response += `let me suggest some <span class="text-amber-400">amazing spots</span> I think you'll love.`;
+                }
+                
+                return response;
+            }
         }
+
+        // ===================== APPLICATION STATE =====================
+        const nlp = new EnhancedNLP();
+        let currentSpot = null;
+        let currentResults = [];
+
+        // ===================== ENHANCED UI FUNCTIONS =====================
+        function showLoading() {
+            document.getElementById('loading-indicator').classList.remove('hidden');
+            document.getElementById('loading-indicator').classList.add('fade-in');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-indicator').classList.add('hidden');
+        }
+
+        function setInput(text) {
+            const input = document.getElementById('user-input');
+            input.value = text;
+            input.focus();
+            
+            // Add typing animation effect
+            input.classList.add('scale-in');
+            setTimeout(() => input.classList.remove('scale-in'), 300);
+        }
+
+        function quickSearch(query) {
+            setInput(query);
+            processSearch();
+            
+            // Add button feedback
+            event.currentTarget.classList.add('scale-in');
+            setTimeout(() => event.currentTarget.classList.remove('scale-in'), 300);
+        }
+
+        function processSearch() {
+            const input = document.getElementById('user-input');
+            const query = input.value.trim();
+            
+            if (!query) {
+                // Add shake animation to input
+                input.parentElement.classList.add('scale-in');
+                setTimeout(() => input.parentElement.classList.remove('scale-in'), 300);
+                return;
+            }
+
+            // Animate search interface exit
+            document.getElementById('search-interface').style.transform = 'translateY(-20px)';
+            document.getElementById('search-interface').style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('search-interface').classList.add('hidden');
+                showLoading();
+                
+                // Process after delay
+                setTimeout(() => {
+                    hideLoading();
+                    const analysis = nlp.analyze(query);
+                    const results = searchDatabase(analysis);
+                    
+                    if (results.length === 1) {
+                        // Show single result
+                        showResultPanel(results[0]);
+                    } else {
+                        // Show multiple results
+                        showMultipleResults(analysis, results);
+                    }
+                }, 1200); // Longer delay for better UX feel
+            }, 300);
+        }
+
+        function searchDatabase(analysis) {
+            let results = [...gautengDatabase];
+            
+            // Filter by location
+            if (analysis.locations.length > 0) {
+                results = results.filter(spot => 
+                    analysis.locations.some(location => 
+                        spot.area.toLowerCase().includes(location.toLowerCase())
+                    )
+                );
+            }
+            
+            // Filter by vibe
+            if (analysis.vibes.length > 0) {
+                results = results.filter(spot => {
+                    return analysis.vibes.some(vibe => 
+                        spot.tags.includes(vibe)
+                    );
+                });
+            }
+            
+            // Filter by activity
+            if (analysis.activities.length > 0) {
+                results = results.filter(spot => {
+                    return analysis.activities.some(activity => 
+                        spot.tags.includes(activity)
+                    );
+                });
+            }
+            
+            // Filter by budget
+            if (analysis.budget) {
+                if (analysis.budget.type === 'max') {
+                    const maxPrice = analysis.budget.amount;
+                    results = results.filter(spot => {
+                        const avgPrice = parseInt(spot.price.match(/\d+/)[0]);
+                        return avgPrice <= maxPrice;
+                    });
+                } else if (analysis.budget.type === 'budget') {
+                    results = results.filter(spot => spot.tags.includes('budget'));
+                } else if (analysis.budget.type === 'luxury') {
+                    results = results.filter(spot => spot.tags.includes('luxury'));
+                }
+            }
+            
+            // Sort by relevance
+            results.sort((a, b) => {
+                // Exact area matches first
+                if (analysis.locations.length > 0) {
+                    const aExact = analysis.locations.some(loc => 
+                        a.area.toLowerCase() === loc.toLowerCase()
+                    );
+                    const bExact = analysis.locations.some(loc => 
+                        b.area.toLowerCase() === loc.toLowerCase()
+                    );
+                    if (aExact && !bExact) return -1;
+                    if (!aExact && bExact) return 1;
+                }
+                
+                // Then by popularity
+                const aPop = parseInt(a.popularity);
+                const bPop = parseInt(b.popularity);
+                return bPop - aPop;
+            });
+            
+            // Store for later use
+            currentResults = results;
+            
+            return results.slice(0, 3); // Return top 3 results
+        }
+
+        function showMultipleResults(analysis, results) {
+            const resultsInterface = document.getElementById('results-interface');
+            resultsInterface.classList.remove('hidden');
+            resultsInterface.classList.add('slide-up');
+            resultsInterface.innerHTML = '';
+            
+            // Add back button with nice animation
+            const backButton = document.createElement('button');
+            backButton.className = 'mb-6 text-zinc-400 hover:text-white transition flex items-center gap-2 hover-lift scale-in';
+            backButton.innerHTML = '<i class="fas fa-arrow-left"></i> <span>Back to search</span>';
+            backButton.onclick = resetToSearch;
+            resultsInterface.appendChild(backButton);
+            
+            // Add results summary
+            const summary = document.createElement('div');
+            summary.className = 'mb-8 scale-in';
+            summary.innerHTML = `
+                <div class="inline-block px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-800 mb-3">
+                    <span class="text-sm text-zinc-400">Your search:</span>
+                    <span class="text-white font-medium ml-2">"${analysis.rawQuery}"</span>
+                </div>
+                <h2 class="heading text-2xl md:text-3xl font-bold text-white mb-3">${nlp.generateResponse(analysis, results)}</h2>
+            `;
+            resultsInterface.appendChild(summary);
+            
+            // Add results with staggered animation
+            results.forEach((spot, index) => {
+                setTimeout(() => {
+                    const card = createResultCard(spot);
+                    resultsInterface.appendChild(card);
+                    
+                    // Add animation
+                    card.classList.add('scale-in');
+                }, index * 150);
+            });
+            
+            // Add more suggestions if needed
+            if (results.length === 0) {
+                setTimeout(() => {
+                    const suggestions = createFallbackSuggestions(analysis);
+                    suggestions.classList.add('scale-in');
+                    resultsInterface.appendChild(suggestions);
+                }, 300);
+            }
+        }
+
+        function createResultCard(spot) {
+            const card = document.createElement('div');
+            card.className = 'mb-4 bg-zinc-900/50 glass border border-zinc-800/50 rounded-2xl p-5 md:p-6 hover:border-orange-500/30 transition-all cursor-pointer hover-lift';
+            card.onclick = () => showResultPanel(spot);
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-1">${spot.name}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm px-2 py-1 bg-zinc-800 rounded-full text-zinc-300">${spot.area}</span>
+                            <span class="text-sm text-amber-400">${spot.popularity} 🔥</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-${spot.icon} text-2xl text-orange-500"></i>
+                </div>
+                
+                <div class="mb-4 p-3 rounded-xl bg-gradient-to-r from-amber-900/10 to-amber-800/10 border border-amber-800/20">
+                    <p class="text-amber-400 text-sm font-medium mb-1">🎯 Current Deal</p>
+                    <p class="text-white">${spot.deal}</p>
+                </div>
+                
+                <p class="text-zinc-300 mb-4">${spot.vibe}</p>
+                
+                <div class="flex flex-wrap gap-2 mb-4">
+                    ${spot.tags.slice(0, 4).map(tag => `
+                        <span class="text-xs px-2 py-1 bg-zinc-800/50 rounded-lg">${tag}</span>
+                    `).join('')}
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <span class="text-zinc-400 text-sm">${spot.distance} from city center</span>
+                    <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-medium transition-all hover-lift">
+                        View Details
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function createFallbackSuggestions(analysis) {
+            const div = document.createElement('div');
+            div.className = 'mt-8 p-6 rounded-2xl bg-zinc-900/30 border border-zinc-800/50';
+            
+            div.innerHTML = `
+                <h3 class="text-xl font-bold text-white mb-4">Try one of these:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button onclick="quickSearch('${analysis.locations[0] || 'Sandton'} budget drinks')" class="p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition text-left hover-lift">
+                        <div class="text-green-400 text-sm font-medium mb-1">💰 Budget Options</div>
+                        <div class="text-xs text-zinc-400">Affordable spots with great value</div>
+                    </button>
+                    <button onclick="quickSearch('${analysis.locations[0] || 'Melville'} chill vibes')" class="p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition text-left hover-lift">
+                        <div class="text-blue-400 text-sm font-medium mb-1">😌 Chill Spots</div>
+                        <div class="text-xs text-zinc-400">Relaxed, easy-going venues</div>
+                    </button>
+                    <button onclick="quickSearch('happy hour now')" class="p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition text-left hover-lift">
+                        <div class="text-amber-400 text-sm font-medium mb-1">🍹 Happy Hour</div>
+                        <div class="text-xs text-zinc-400">Current drink specials nearby</div>
+                    </button>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function showResultPanel(spot) {
+            currentSpot = spot;
+            
+            // Set all content with animations
+            const elements = [
+                { id: 'res-name', value: spot.name, delay: 100 },
+                { id: 'res-area', value: spot.area, delay: 150 },
+                { id: 'res-deal', value: spot.deal, delay: 200 },
+                { id: 'res-vibe', value: spot.vibe, delay: 250 },
+                { id: 'res-tip', value: spot.tip, delay: 300 },
+                { id: 'res-price', value: spot.price, delay: 350 },
+                { id: 'res-time', value: spot.bestTime, delay: 400 },
+                { id: 'res-crowd', value: spot.crowd, delay: 450 },
+                { id: 'res-popularity', value: spot.popularity, delay: 500 },
+                { id: 'res-distance', value: spot.distance + ' drive', delay: 550 }
+            ];
+            
+            elements.forEach(({ id, value, delay }) => {
+                setTimeout(() => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value;
+                        element.classList.add('scale-in');
+                        setTimeout(() => element.classList.remove('scale-in'), 300);
+                    }
+                }, delay);
+            });
+            
+            // Set icon with animation
+            setTimeout(() => {
+                const icon = document.getElementById('res-icon');
+                icon.className = `fas fa-${spot.icon} text-6xl md:text-8xl text-orange-500/40 scale-in`;
+                setTimeout(() => icon.classList.remove('scale-in'), 300);
+            }, 600);
+            
+            // Show extra info
+            document.getElementById('res-extra').classList.remove('hidden');
+            document.getElementById('res-extra').classList.add('scale-in');
+            
+            // Hide other interfaces
+            document.getElementById('search-interface').classList.add('hidden');
+            document.getElementById('results-interface').classList.add('hidden');
+            
+            // Show result panel with animation
+            setTimeout(() => {
+                const panel = document.getElementById('result-panel');
+                panel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+                panel.classList.add('opacity-100', 'scale-100');
+            }, 700);
+        }
+
+        function resetUI() {
+            const panel = document.getElementById('result-panel');
+            panel.classList.remove('opacity-100', 'scale-100');
+            panel.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                panel.classList.add('pointer-events-none');
+                resetToSearch();
+            }, 400);
+        }
+
+        function resetToSearch() {
+            // Reset all interfaces
+            const searchInterface = document.getElementById('search-interface');
+            searchInterface.classList.remove('hidden');
+            searchInterface.style.transform = '';
+            searchInterface.style.opacity = '1';
+            
+            document.getElementById('results-interface').classList.add('hidden');
+            document.getElementById('results-interface').innerHTML = '';
+            
+            // Clear input and focus
+            const input = document.getElementById('user-input');
+            input.value = '';
+            input.focus();
+            
+            // Reset result panel
+            document.getElementById('result-panel').classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            
+            // Hide about modal if open
+            hideAbout();
+        }
+
+        function shareCurrentSpot() {
+            if (!currentSpot) return;
+            
+            const shareText = `Check out ${currentSpot.name} in ${currentSpot.area}! ${currentSpot.deal} Found via Outgo - your Gauteng insider.`;
+            
+            // Add button feedback
+            event.currentTarget.classList.add('scale-in');
+            setTimeout(() => event.currentTarget.classList.remove('scale-in'), 300);
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${currentSpot.name} - Outgo Recommendation`,
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback
+                navigator.clipboard.writeText(shareText).then(() => {
+                    // Show temporary success message
+                    const originalText = event.currentTarget.innerHTML;
+                    event.currentTarget.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                    event.currentTarget.classList.add('bg-green-600');
+                    
+                    setTimeout(() => {
+                        event.currentTarget.innerHTML = originalText;
+                        event.currentTarget.classList.remove('bg-green-600');
+                    }, 2000);
+                });
+            }
+        }
+
+        function saveCurrentSpot() {
+            if (!currentSpot) return;
+            
+            // Add button feedback
+            event.currentTarget.classList.add('scale-in');
+            setTimeout(() => event.currentTarget.classList.remove('scale-in'), 300);
+            
+            // Show temporary success message
+            const originalText = event.currentTarget.innerHTML;
+            event.currentTarget.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
+            event.currentTarget.classList.add('bg-green-600');
+            
+            setTimeout(() => {
+                event.currentTarget.innerHTML = originalText;
+                event.currentTarget.classList.remove('bg-green-600');
+            }, 2000);
+            
+            // In production: Save to localStorage/backend
+            console.log('Saved spot:', currentSpot.name);
+        }
+
+        function getDirections() {
+            if (!currentSpot) return;
+            
+            // Add button feedback
+            event.currentTarget.classList.add('scale-in');
+            setTimeout(() => event.currentTarget.classList.remove('scale-in'), 300);
+            
+            // In production: Open Google Maps/Apple Maps
+            alert(`Opening directions to ${currentSpot.name} in ${currentSpot.area}...\n\n(IRL: Would open Google Maps with coordinates)`);
+        }
+
+        function showAbout() {
+            document.getElementById('about-modal').classList.remove('hidden');
+        }
+
+        function hideAbout() {
+            document.getElementById('about-modal').classList.add('hidden');
+        }
+
+        // ===================== ENHANCED EVENT LISTENERS =====================
+        const userInput = document.getElementById('user-input');
+        
+        userInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                processSearch();
+                // Add enter key feedback
+                userInput.parentElement.classList.add('scale-in');
+                setTimeout(() => userInput.parentElement.classList.remove('scale-in'), 300);
+            }
+        });
+
+        userInput.addEventListener('focus', () => {
+            userInput.parentElement.classList.add('input-glow');
+        });
+
+        userInput.addEventListener('blur', () => {
+            userInput.parentElement.classList.remove('input-glow');
+        });
+
+        // Add input animation on focus
+        userInput.addEventListener('focus', () => {
+            userInput.parentElement.classList.add('scale-in');
+            setTimeout(() => userInput.parentElement.classList.remove('scale-in'), 300);
+        });
+
+        // Close about modal when clicking outside
+        document.getElementById('about-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('about-modal')) {
+                hideAbout();
+            }
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Escape key to reset
+            if (e.key === 'Escape') {
+                resetToSearch();
+            }
+            // '/' to focus search
+            if (e.key === '/' && !userInput.matches(':focus')) {
+                e.preventDefault();
+                userInput.focus();
+            }
+        });
+
+        // Initialize with focus and some flair
+        setTimeout(() => {
+            userInput.focus();
+            
+            // Add initial animation to main prompt
+            document.getElementById('main-prompt').classList.add('scale-in');
+            document.getElementById('sub-prompt').classList.add('scale-in');
+            
+            // Add floating animation to background elements
+            const floaters = document.querySelectorAll('.floating');
+            floaters.forEach((floater, index) => {
+                floater.style.animationDelay = `${index * 0.5}s`;
+            });
+        }, 500);
     </script>
 </body>
 </html>
