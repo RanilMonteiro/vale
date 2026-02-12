@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ===== VIEWPORT – iPad 10th gen optimised, laptop untouched ===== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>Turnkey Instruments | Turnkey Instruments</title>
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -59,6 +60,7 @@
             gap: 20px;
             box-shadow: var(--shadow-lg);
             z-index: 10;
+            flex-shrink: 0;
         }
 
         .panel-header {
@@ -480,6 +482,213 @@
         .summary-card:last-child {
             background: #fff9e6;
         }
+
+        /* ===== iPAD 10TH GEN – PERFECT FIT (2360x1640, 10.9") ===== */
+        @media screen and (max-width: 1180px) and (min-width: 800px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+                background: #f1f5f9;
+            }
+
+            .controls {
+                width: 100%;
+                max-width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                padding: 24px 28px;  /* slightly wider for 10th gen */
+                overflow-y: visible;
+                flex-shrink: 1;
+                box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+            }
+
+            /* bigger touch targets for iPad */
+            .btn {
+                padding: 14px 22px;
+                font-size: 15px;
+            }
+
+            .input-group {
+                padding: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr 1fr; /* keep two columns on iPad 10 – plenty of width */
+                gap: 16px;
+            }
+
+            .preview {
+                padding: 30px 28px;
+                background: #000000;
+                overflow-y: visible;
+            }
+
+            .preview-header {
+                width: 100%;
+                max-width: 100%;
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+
+            .sheet {
+                width: 100%;
+                max-width: 100%;
+                padding: 20px 22px;
+                min-height: auto;
+                box-shadow: 0 20px 40px rgba(255,215,0,0.15);
+            }
+
+            /* Summary cards – 2x2 on iPad */
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+
+            .summary-card .value {
+                font-size: 28px;
+            }
+
+            /* make table scrollable but keep columns readable */
+            .data-section {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .data-section table {
+                min-width: 900px; /* ensure all 8 columns visible without squish */
+            }
+
+            .doc-header {
+                flex-direction: row; /* stay side by side on 10th gen */
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .company-info h1 {
+                font-size: 26px;
+            }
+
+            .logo-container {
+                width: 160px;
+                height: 70px;
+            }
+
+            /* adjust contact info for iPad */
+            .contact-info {
+                font-size: 11px;
+            }
+
+            .preview-header h2 {
+                font-size: 20px;
+            }
+
+            .panel-header h1 {
+                font-size: 26px;
+            }
+
+            /* 10th gen has ample width, keep btn-group 2 columns */
+            .btn-group {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+
+            /* increase font size slightly for readability */
+            input, select, textarea {
+                font-size: 15px;
+                padding: 12px 14px;
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            #recent-entries div {
+                padding: 10px;
+                font-size: 13px;
+            }
+        }
+
+        /* ===== iPad PORTRAIT fine-tuning (10th gen narrower) ===== */
+        @media screen and (max-width: 820px) and (min-width: 760px) {
+            .form-row {
+                grid-template-columns: 1fr; /* stack only in portrait */
+            }
+
+            .doc-header {
+                flex-direction: column;
+            }
+
+            .logo-container {
+                width: 140px;
+                height: 60px;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr; /* stacked for easier tapping */
+            }
+
+            .controls {
+                padding: 20px;
+            }
+
+            .preview {
+                padding: 20px;
+            }
+
+            .sheet {
+                padding: 18px;
+            }
+
+            .summary-grid {
+                gap: 12px;
+            }
+        }
+
+        /* ===== LAPTOP (EXACTLY AS ORIGINAL) – NO CHANGES ===== */
+        @media screen and (min-width: 1181px) {
+            body {
+                overflow: hidden;
+                height: 100vh;
+            }
+            .controls {
+                width: 450px;
+                padding: 24px;
+                overflow-y: auto;
+            }
+            .preview {
+                padding: 40px;
+                background: #000000;
+            }
+            .preview-header {
+                width: 210mm;
+            }
+            .sheet {
+                width: 210mm;
+                padding: 25mm;
+            }
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .btn-group {
+                grid-template-columns: 1fr 1fr;
+            }
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            input, select, textarea {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            .doc-header {
+                flex-direction: row;
+            }
+        }
     </style>
 </head>
 <body>
@@ -522,7 +731,7 @@
             </div>
             <div>
                 <label class="label-required">Date</label>
-                <input type="date" id="vDate" value="<?php echo date('Y-m-d'); ?>">
+                <input type="date" id="vDate">
             </div>
         </div>
         <div class="form-row">
@@ -619,7 +828,7 @@
                 <table style="border: 1px solid var(--border-light);">
                     <tr>
                         <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">Report Date:</td>
-                        <td id="report-date"><?php echo date('F d, Y'); ?></td>
+                        <td id="report-date"></td>
                     </tr>
                     <tr>
                         <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">TKI Manager:</td>
@@ -631,14 +840,14 @@
                     </tr>
                     <tr>
                         <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">Report Period:</td>
-                        <td id="out-period"><?php echo date('F Y'); ?></td>
+                        <td id="out-period"></td>
                     </tr>
                 </table>
             </div>
             <div>
                 <div class="summary-card">
                     <h4>Report ID</h4>
-                    <div class="value"><?php echo strtoupper(substr(md5(uniqid()), 0, 8)); ?></div>
+                    <div class="value"></div>
                 </div>
             </div>
         </div>
@@ -696,7 +905,7 @@
             <div style="display: flex; justify-content: space-between;">
                 <div>
                     <strong>Generated by:</strong> Industrial Report Pro v2.0<br>
-                    <strong>Timestamp:</strong> <span id="generation-time"><?php echo date('Y-m-d H:i:s'); ?></span>
+                    <strong>Timestamp:</strong> <span id="generation-time"></span>
                 </div>
                 <div style="text-align: right;">
                     <strong>Confidential Document</strong><br>
@@ -885,6 +1094,12 @@
         document.getElementById('sum-failed').textContent = failed;
 
         document.getElementById('generation-time').textContent = new Date().toLocaleString();
+        
+        // Report ID (random 8 chars)
+        const reportIdDiv = document.querySelector('.summary-card:last-child .value');
+        if (reportIdDiv) {
+            reportIdDiv.textContent = Math.random().toString(36).substring(2,10).toUpperCase();
+        }
 
         updateStorageInfo();
         updateRecentEntries();
@@ -992,17 +1207,19 @@
     function initApp() {
         document.getElementById('vDate').valueAsDate = new Date();
         
-        renderReport();
-        
-        ['locName', 'managerName'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                localStorage.setItem(id, document.getElementById(id).value);
-            });
-        });
-        
+        // Restore saved fields
         ['locName', 'managerName'].forEach(id => {
             const saved = localStorage.getItem(id);
             if (saved) document.getElementById(id).value = saved;
+        });
+        
+        renderReport();
+        
+        ['locName', 'managerName'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                localStorage.setItem(id, this.value);
+                renderReport();
+            });
         });
         
         showAlert('Industrial Report Pro v2.0 loaded successfully');
