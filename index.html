@@ -2,759 +2,1013 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Outgo | Your Gauteng Insider</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnkey Instruments | Turnkey Instruments</title>
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* Reset and full screen setup */
+        /* ===== BRIGHT YELLOW + BLACK BACKGROUND BEHIND PAGE ===== */
+        :root {
+            --primary-yellow: #FFD700;      /* Bright gold yellow */
+            --secondary-yellow: #FFC800;    /* Even brighter yellow */
+            --accent-yellow: #FFF8E7;       /* Very light yellow tint */
+            --light-bg: #ffffff;           /* white panels */
+            --panel-bg: #ffffff;           /* pure white */
+            --card-bg: #ffffff;            /* white cards */
+            --border-light: #e2e8f0;       /* cool grey */
+            --text-dark: #1e293b;
+            --text-muted: #475569;
+            --success: #15803d;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --radius: 8px;
+            
+            /* BLACK background behind preview */
+            --preview-bg: #000000;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #000000;
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f1f5f9;           /* left side background remains light grey */
+            color: var(--text-dark);
+            line-height: 1.5;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== Control Panel - Light ===== */
+        .controls {
+            width: 450px;
+            background: var(--panel-bg);
+            padding: 24px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+        }
+
+        .panel-header {
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--primary-yellow);
+            margin-bottom: 8px;
+        }
+
+        .panel-header h1 {
+            color: var(--primary-yellow);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-shadow: 0 0 4px rgba(255,215,0,0.3);
+        }
+
+        .panel-header p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .input-group {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .input-group:hover {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.15);
+        }
+
+        .input-group h3 {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--primary-yellow);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group h3::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--primary-yellow);
+            border-radius: 2px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .label-required::after {
+            content: '*';
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--text-dark);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.25);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* ===== Buttons with BRIGHT YELLOW ===== */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-yellow);
+            color: #0a0c10;          /* dark text for contrast */
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: #FFC800;        /* brighter */
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255,215,0,0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
             color: white;
-            height: 100vh;
-            height: -webkit-fill-available;
+        }
+
+        .btn-success:hover {
+            background: #166534;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            font-size: 12px;
+            padding: 8px 16px;
+        }
+
+        .btn-danger:hover {
+            background: #991b1b;
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* ===== Preview Section - BLACK BACKGROUND ===== */
+        .preview {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #000000;        /* COMPLETELY BLACK behind page */
+        }
+
+        .preview-header {
+            width: 210mm;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #0a0c10;        /* dark, almost black */
+            border-radius: var(--radius);
+            color: white;
+            border: 1px solid #2d2d2d;
+            box-shadow: 0 4px 20px rgba(255,215,0,0.1);
+        }
+
+        .preview-header h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--primary-yellow);
+            text-shadow: 0 0 6px rgba(255,215,0,0.5);
+        }
+
+        .preview-header p {
+            font-size: 13px;
+            opacity: 0.9;
+            color: #cccccc;
+        }
+
+        .sheet {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25mm;
+            box-shadow: 0 25px 50px -12px rgba(255,215,0,0.2);
+            box-sizing: border-box;
+            border-radius: 4px;
+            color: var(--text-dark);
+            border: 1px solid #444;
+        }
+
+        /* ===== Document Styling - BRIGHT YELLOW ===== */
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid var(--primary-yellow);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company-info h1 {
+            font-size: 28px;
+            color: var(--primary-yellow);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(255,215,0,0.3);
+        }
+
+        .company-info .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .logo-container {
+            width: 180px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border-light);
+            border-radius: 4px;
             overflow: hidden;
-        }
-        
-        html {
-            height: 100vh;
-            height: -webkit-fill-available;
-            background: #000000;
-        }
-        
-        .heading { font-family: 'Space Grotesk', sans-serif; }
-        
-        /* Safe area insets for notch phones */
-        .safe-top {
-            padding-top: env(safe-area-inset-top);
-            background: #000000;
-        }
-        
-        .safe-bottom {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        
-        /* Full app background */
-        .app-background {
-            background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 100%);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
+            background: #f8fafc;
         }
 
-        /* Hide status bar background */
-        .status-bar-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: env(safe-area-inset-top);
-            background: #000000;
-            z-index: 1000;
+        #logo-preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        .input-glow:focus-within {
-            box-shadow: 0 0 40px rgba(255, 95, 0, 0.15);
-            border-color: rgba(255, 95, 0, 0.5);
+        /* ===== Summary Cards - bright yellow accents ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0;
         }
 
-        .reveal-card {
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .summary-card {
+            background: #fff9e6;        /* very light yellow */
+            border: 1px solid #ffeaa5;
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(255,215,0,0.1);
         }
 
-        .floating { 
-            animation: float 6s ease-in-out infinite; 
-        }
-        
-        @keyframes float { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-10px); } 
-        }
-
-        .slide-up {
-            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .summary-card h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .typing-indicator span {
-            animation: typingDot 1.4s infinite both;
-        }
-        .typing-indicator span:nth-child(2) {
-            animation-delay: .2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: .4s;
-        }
-        @keyframes typingDot {
-            0%, 80%, 100% { opacity: .3; transform: translateY(0); }
-            40% { opacity: 1; transform: translateY(-3px); }
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-yellow);
+            text-shadow: 0 0 4px rgba(255,215,0,0.3);
         }
 
-        .pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* ===== Data Table - bright yellow header ===== */
+        .data-section {
+            margin-top: 30px;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .scale-in {
-            animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .section-title {
+            background: var(--primary-yellow);
+            color: #0a0c10;           /* dark text on yellow */
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 4px 4px 0 0;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e6b800;
         }
 
-        /* Smooth transitions */
-        .smooth-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            box-shadow: var(--shadow);
         }
 
-        /* Custom scrollbar for desktop only */
-        @media (min-width: 768px) {
-            .custom-scrollbar::-webkit-scrollbar {
-                width: 8px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 4px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(255, 95, 0, 0.5);
-                border-radius: 4px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 95, 0, 0.7);
-            }
+        th {
+            background: #FFD700;        /* bright yellow */
+            color: #0a0c10;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding: 12px 8px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid #e6b800;
         }
 
-        /* Glass effect */
-        .glass {
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        td {
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
         }
 
-        /* Gradient text */
-        .gradient-text {
-            background: linear-gradient(135deg, #ff5f00 0%, #ff9500 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        tr:nth-child(even) {
+            background: #fffdf5;
         }
 
-        /* Hover effects for desktop only */
-        @media (min-width: 768px) {
-            .hover-lift:hover {
-                transform: translateY(-2px);
-            }
-        }
-        
-        .hover-lift {
-            transition: transform 0.2s ease;
+        tr:nth-child(odd) {
+            background: white;
         }
 
-        /* Mobile Optimizations */
-        @media (max-width: 767px) {
-            .mobile-text-lg {
-                font-size: 2.75rem;
-                line-height: 1.1;
-            }
-            .mobile-text-md {
-                font-size: 1.75rem;
-                line-height: 1.2;
-            }
-            .mobile-text-sm {
-                font-size: 1.125rem;
-                line-height: 1.4;
-            }
-            .mobile-text-xs {
-                font-size: 0.875rem;
-            }
-            .mobile-px {
-                padding-left: 1.25rem;
-                padding-right: 1.25rem;
-            }
-            .mobile-py {
-                padding-top: 1rem;
-                padding-bottom: 1rem;
-            }
-            
-            /* Touch-friendly buttons */
-            button, [role="button"] {
-                min-height: 44px;
-                min-width: 44px;
-            }
-            
-            /* Better input on mobile */
-            input {
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
+        tr:hover {
+            background: #fff9e6;
         }
 
-        /* Prevent body scroll when modals are open */
-        body.no-scroll {
-            overflow: hidden;
+        .status-pass {
+            color: var(--success);
+            font-weight: 600;
         }
 
-        /* iOS specific fixes */
-        @supports (-webkit-touch-callout: none) {
-            .ios-fix {
-                -webkit-overflow-scrolling: touch;
-            }
+        .status-fail {
+            color: var(--danger);
+            font-weight: 600;
         }
 
-        /* Android specific fixes */
-        @supports not (-webkit-touch-callout: none) {
-            .android-fix {
-                scroll-behavior: smooth;
-            }
-        }
-
-        /* Hide scrollbar on mobile */
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
+        /* ===== Utility Classes ===== */
+        .hidden {
             display: none;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #14532d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #7f1d1d;
+            border: 1px solid #fecaca;
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Recent entries */
+        #recent-entries div {
+            background: white !important;
+            border-color: var(--border-light) !important;
+            color: var(--text-dark);
+        }
+
+        #recent-entries strong {
+            color: var(--primary-yellow);
+        }
+        
+        /* Report ID card specific */
+        .summary-card:last-child {
+            background: #fff9e6;
         }
     </style>
 </head>
-<body class="text-white ios-fix">
-    <!-- Status bar background (black to match) -->
-    <div class="status-bar-bg"></div>
-    
-    <!-- App background -->
-    <div class="app-background"></div>
+<body>
 
-    <!-- Main App Container -->
-    <div id="app-container" class="h-full flex flex-col">
-        <!-- Navigation - Fixed at top -->
-        <nav class="safe-top glass border-b border-white/10 z-50">
-            <div class="flex justify-between items-center px-4 py-3">
-                <div class="heading text-xl md:text-2xl font-bold tracking-tighter">OUTGO<span class="text-orange-600">.</span></div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full pulse"></span>
-                        <span class="text-[10px] tracking-[0.1em] font-bold text-zinc-500 uppercase hidden sm:inline">Live</span>
-                    </div>
-                    <button onclick="showAbout()" class="text-xs font-medium border border-white/10 px-3 py-1.5 rounded-full bg-black/50 active:scale-95 active:bg-white active:text-black transition-transform">
-                        <i class="fas fa-info-circle"></i>
-                    </button>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main id="main-content" class="flex-1 overflow-y-auto hide-scrollbar">
-            <div class="min-h-full flex flex-col items-center justify-center mobile-px mobile-py">
-                <!-- Search Interface -->
-                <div id="search-interface" class="w-full max-w-md text-center space-y-6 slide-up">
-                    <div class="space-y-4">
-                        <h1 id="main-prompt" class="heading mobile-text-lg md:text-5xl font-bold tracking-tight gradient-text">
-                            What's the move?
-                        </h1>
-                        <p id="sub-prompt" class="text-zinc-400 mobile-text-sm font-light">
-                            I know every spot in Gauteng. Ask naturally—like you're asking a friend.
-                        </p>
-                    </div>
-
-                    <!-- Input Container -->
-                    <div class="relative z-10">
-                        <div class="input-glow flex items-center bg-zinc-900/70 glass border border-white/10 rounded-2xl p-2 transition-all duration-300 active:border-orange-500/30">
-                            <input id="user-input" type="text" 
-                                placeholder="Try: 'date night in Bedfordview'"
-                                class="flex-1 bg-transparent border-none outline-none px-4 py-3 mobile-text-sm font-light placeholder:text-zinc-500"
-                                autocomplete="off">
-                            <button onclick="processSearch()" class="ml-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white h-12 w-12 rounded-xl font-bold active:from-orange-500 active:to-amber-500 transition-transform active:scale-95 flex items-center justify-center">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Quick Suggestions -->
-                        <div class="flex justify-center gap-2 mt-4 flex-wrap">
-                            <button onclick="quickSearch('Chill rooftop Rosebank')" class="mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/50 active:bg-zinc-800/70 border border-zinc-800/50 active:border-orange-500/30 transition-colors active:scale-95">
-                                <i class="fas fa-building mr-1.5"></i>Rooftop
-                            </button>
-                            <button onclick="quickSearch('Date night romantic')" class="mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/50 active:bg-zinc-800/70 border border-zinc-800/50 active:border-pink-500/30 transition-colors active:scale-95">
-                                <i class="fas fa-heart mr-1.5"></i>Date Night
-                            </button>
-                            <button onclick="quickSearch('Happy Hour now')" class="mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/50 active:bg-zinc-800/70 border border-zinc-800/50 active:border-green-500/30 transition-colors active:scale-95">
-                                <i class="fas fa-glass-cheers mr-1.5"></i>Happy Hour
-                            </button>
-                        </div>
-
-                        <!-- Example Queries -->
-                        <div class="mt-6 pt-4 border-t border-zinc-800/50">
-                            <p class="text-xs text-zinc-500 mb-3">Try asking like this:</p>
-                            <div class="space-y-2 max-w-xs mx-auto">
-                                <button onclick="setInput('Where can I watch rugby in Pretoria?')" class="w-full text-left mobile-text-xs px-3 py-2 rounded-lg bg-zinc-900/30 active:bg-zinc-800/50 border border-zinc-800/30 active:border-blue-500/30 transition-colors active:scale-95">
-                                    <i class="fas fa-tv mr-2 text-blue-400"></i>
-                                    "Watch rugby in Pretoria"
-                                </button>
-                                <button onclick="setInput('Fun activities for 4 people')" class="w-full text-left mobile-text-xs px-3 py-2 rounded-lg bg-zinc-900/30 active:bg-zinc-800/50 border border-zinc-800/30 active:border-green-500/30 transition-colors active:scale-95">
-                                    <i class="fas fa-users mr-2 text-green-400"></i>
-                                    "Fun for 4 people"
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Interface -->
-                <div id="results-interface" class="hidden w-full max-w-md h-auto py-4">
-                    <!-- Results will be dynamically inserted here -->
-                </div>
-            </div>
-        </main>
-
-        <!-- Fixed Bottom Suggestions -->
-        <div class="safe-bottom glass border-t border-white/10">
-            <div class="flex justify-around p-3 overflow-x-auto hide-scrollbar">
-                <button onclick="quickSearch('Sandton now')" class="flex-1 min-w-0 mx-1 mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/80 border border-white/10 active:bg-zinc-800 transition-colors active:scale-95 whitespace-nowrap">
-                    🏙️ Sandton
-                </button>
-                <button onclick="quickSearch('Melville vibes')" class="flex-1 min-w-0 mx-1 mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/80 border border-white/10 active:bg-zinc-800 transition-colors active:scale-95 whitespace-nowrap">
-                    🎨 Melville
-                </button>
-                <button onclick="quickSearch('Pretoria tonight')" class="flex-1 min-w-0 mx-1 mobile-text-xs px-3 py-2 rounded-full bg-zinc-900/80 border border-white/10 active:bg-zinc-800 transition-colors active:scale-95 whitespace-nowrap">
-                    🏛️ Pretoria
-                </button>
-            </div>
-        </div>
+<!-- Control Panel -->
+<div class="controls">
+    <div class="panel-header">
+        <h1>Turnkey Instruments</h1>
+        <p>Turnkey Instruments | Professional Inspection Reporting</p>
     </div>
 
-    <!-- Loading Indicator -->
-    <div id="loading-indicator" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div class="text-center scale-in p-6">
-            <div class="w-16 h-16 rounded-full border-4 border-orange-600 border-t-transparent animate-spin mx-auto mb-4"></div>
-            <p class="text-white text-lg font-medium">Finding the perfect spots...</p>
-            <p class="text-sm text-zinc-400 mt-2">Searching Gauteng's best venues</p>
-            <div class="typing-indicator flex justify-center gap-1 mt-4">
-                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+
+    <!-- Company Information -->
+    <div class="input-group">
+        <h3>1. Company & Site Details</h3>
+        <div class="form-row">
+            <div>
+                <label class="label-required">Site/Location Name</label>
+                <input type="text" id="locName" value="Modikwa North Shaft 1" oninput="renderReport()">
+            </div>
+            <div>
+                <label>Manager Name</label>
+                <input type="text" id="managerName" value="Gavin Robins" oninput="renderReport()">
             </div>
         </div>
+        <label>Company Logo (JPG/PNG)</label>
+        <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(event)">
+        <small style="color: var(--text-muted); font-size: 11px;">Recommended: 150×80px, max 2MB</small>
     </div>
 
-    <!-- Detailed Result Panel -->
-    <div id="result-panel" class="reveal-card opacity-0 scale-95 pointer-events-none fixed inset-0 bg-black/95 z-40 overflow-y-auto hide-scrollbar">
-        <div class="min-h-full flex items-center justify-center p-4">
-            <div class="w-full max-w-md bg-zinc-900/95 glass border border-white/10 rounded-2xl p-5">
-                <!-- Close button -->
-                <button onclick="resetUI()" class="absolute top-4 right-4 text-zinc-500 active:text-white active:scale-95 z-10">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-                
-                <!-- Image/Icon -->
-                <div id="res-img" class="h-48 rounded-xl bg-gradient-to-br from-orange-900/20 to-amber-900/20 border border-orange-800/20 flex items-center justify-center mb-4">
-                    <i id="res-icon" class="fas fa-martini-glass-citrus text-6xl text-orange-500/40"></i>
-                </div>
-                
-                <!-- Name and Area -->
-                <div class="mb-4">
-                    <h2 id="res-name" class="heading mobile-text-md font-bold text-white mb-1">--</h2>
-                    <div class="flex items-center gap-2">
-                        <span id="res-area" class="text-sm px-2 py-1 bg-zinc-800 rounded-full text-zinc-300">--</span>
-                        <span id="res-distance" class="text-xs text-zinc-500">• 15-20 min drive</span>
-                    </div>
-                </div>
-                
-                <!-- Deal -->
-                <div class="mb-4 p-3 rounded-xl bg-gradient-to-r from-amber-900/10 to-amber-800/10 border border-amber-800/20">
-                    <p class="text-amber-400 text-sm font-medium mb-1">🔥 Current Deal</p>
-                    <p id="res-deal" class="text-white mobile-text-sm">--</p>
-                </div>
-                
-                <!-- Vibe and Tip -->
-                <div class="space-y-4 mb-6">
-                    <div>
-                        <p class="text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2">
-                            <i class="fas fa-music mr-2"></i>The Vibe
-                        </p>
-                        <p id="res-vibe" class="text-zinc-300 font-light mobile-text-sm">--</p>
-                    </div>
-                    <div>
-                        <p class="text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2">
-                            <i class="fas fa-lightbulb mr-2"></i>Insider Tip
-                        </p>
-                        <p id="res-tip" class="text-zinc-300 font-light mobile-text-sm">--</p>
-                    </div>
-                </div>
-                
-                <!-- Quick Actions -->
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <button onclick="shareCurrentSpot()" class="py-3 rounded-xl bg-zinc-800/50 active:bg-zinc-700/50 border border-zinc-700/50 transition-colors active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fas fa-share-alt text-blue-400"></i>
-                        <span class="text-sm">Share</span>
-                    </button>
-                    <button onclick="saveCurrentSpot()" class="py-3 rounded-xl bg-zinc-800/50 active:bg-zinc-700/50 border border-zinc-700/50 transition-colors active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fas fa-bookmark text-amber-400"></i>
-                        <span class="text-sm">Save</span>
-                    </button>
-                </div>
-                
-                <!-- Main Action Button -->
-                <button onclick="getDirections()" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 active:from-orange-500 active:to-amber-500 text-white py-4 rounded-xl font-bold transition-transform active:scale-95 mobile-text-sm">
-                    <i class="fas fa-directions mr-2"></i> GET DIRECTIONS
-                </button>
+    <!-- Add Inspection Entry -->
+    <div class="input-group">
+        <h3>2. New Inspection Entry</h3>
+        <div class="form-row">
+            <div>
+                <label class="label-required">Vehicle Number</label>
+                <input type="text" id="vNo" placeholder="DT 16 FB" maxlength="20">
+            </div>
+            <div>
+                <label class="label-required">Date</label>
+                <input type="date" id="vDate" value="<?php echo date('Y-m-d'); ?>">
             </div>
         </div>
+        <div class="form-row">
+            <div>
+                <label class="label-required">Efficiency %</label>
+                <input type="number" id="vEff" placeholder="88" min="0" max="100" step="0.1">
+            </div>
+            <div>
+                <label>Alarm %</label>
+                <input type="number" id="vAlarm" placeholder="0" min="0" max="100">
+            </div>
+            <div>
+                <label>Speed (kph)</label>
+                <input type="number" id="vSpeed" placeholder="60" min="0">
+            </div>
+        </div>
+        <label>Remarks</label>
+        <select id="vRem">
+            <option value="Passed">Passed ✓</option>
+            <option value="Failed">Failed ✗</option>
+            <option value="DNA">DNA (Did Not Arrive)</option>
+            <option value="Maintenance">Maintenance Required</option>
+            <option value="Rescheduled">Rescheduled</option>
+            <option value="Other">Other</option>
+        </select>
+        <button class="btn btn-primary" onclick="addRow()">
+            <span>+ Add Inspection Record</span>
+        </button>
     </div>
 
-    <!-- About Modal -->
-    <div id="about-modal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
-        <div class="w-full max-w-sm glass rounded-2xl p-6">
-            <div class="flex justify-between items-start mb-6">
-                <h3 class="heading text-xl font-bold text-white">About Outgo</h3>
-                <button onclick="hideAbout()" class="text-zinc-500 active:text-white active:scale-95">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <p class="text-zinc-300 mb-6 mobile-text-sm">
-                Your personal Gauteng insider. I know every rooftop, happy hour, and hidden gem across Joburg, Pretoria, and everywhere in between.
-            </p>
-            <div class="space-y-4 mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-orange-600/20 flex items-center justify-center">
-                        <i class="fas fa-bolt text-orange-400"></i>
-                    </div>
-                    <span class="text-sm text-zinc-300">Real-time deals & specials</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
-                        <i class="fas fa-map-marker-alt text-blue-400"></i>
-                    </div>
-                    <span class="text-sm text-zinc-300">All Gauteng areas covered</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-600/20 flex items-center justify-center">
-                        <i class="fas fa-lightbulb text-green-400"></i>
-                    </div>
-                    <span class="text-sm text-zinc-300">Insider tips & local knowledge</span>
-                </div>
-            </div>
-            <button onclick="hideAbout()" class="w-full py-3 rounded-xl bg-zinc-800 active:bg-zinc-700 transition-colors active:scale-95">
-                Got it, let's explore!
+    <!-- Data Management -->
+    <div class="input-group">
+        <h3>3. Data Management</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+            Current records: <span id="record-count">0</span> | Storage: <span id="storage-used">0KB</span>
+        </p>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="downloadPDF()">
+                <span>Download PDF</span>
+            </button>
+            <button class="btn btn-secondary" onclick="downloadExcel()">
+                <span>Export Excel</span>
+            </button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" onclick="printReport()" style="background: #6b7280; color: white;">
+                <span>Print Report</span>
+            </button>
+            <button class="btn btn-danger" onclick="clearData()">
+                <span>Clear All Data</span>
             </button>
         </div>
     </div>
 
-    <!-- Background Elements -->
-    <div class="fixed bottom-4 left-4 opacity-10 floating pointer-events-none">
-        <div class="text-4xl font-black text-white/5 uppercase">GAUTENG</div>
+    <!-- Recent Entries -->
+    <div class="input-group">
+        <h3>4. Recent Entries</h3>
+        <div id="recent-entries" style="max-height: 200px; overflow-y: auto;">
+            <p style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px;">
+                No entries yet. Add your first inspection record.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Document Preview - BLACK BACKGROUND -->
+<div class="preview">
+    <div class="preview-header">
+        <h2>Document Preview</h2>
+        <p>This is a live preview of your report. All changes are auto-saved.</p>
     </div>
     
-    <div class="fixed top-1/4 right-4 opacity-10 floating pointer-events-none" style="animation-delay: 1s;">
-        <div class="text-3xl font-black text-white/5 uppercase">JOBURG</div>
+    <div class="sheet" id="report-content">
+        <!-- Header -->
+        <div class="doc-header">
+            <div class="company-info">
+                <h1 id="out-loc">Modikwa North Shaft 1</h1>
+                <div class="subtitle">Vehicle Inspection Report</div>
+                <div class="contact-info">
+                    <strong>Turnkey Instruments (Pty) Ltd</strong><br>
+                    Unit F4 Greenstone Hill Office Park | Emerald Boulevard<br>
+                    Greenstone Hill, 1609 | Tel: 011-608-4537<br>
+                    Email: admin@turnkeyinstruments.co.za | www.turnkeyinstruments.co.za
+                </div>
+            </div>
+            <div class="logo-container">
+                <img id="logo-preview" src="" alt="Company Logo">
+            </div>
+        </div>
+
+        <!-- Report Details -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin: 24px 0;">
+            <div>
+                <table style="border: 1px solid var(--border-light);">
+                    <tr>
+                        <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">Report Date:</td>
+                        <td id="report-date"><?php echo date('F d, Y'); ?></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">TKI Manager:</td>
+                        <td id="out-manager">Gavin Robins</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">Site Supervisor:</td>
+                        <td>Phillip - 072-645-7665</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff9e6; font-weight: bold; color: var(--text-dark);">Report Period:</td>
+                        <td id="out-period"><?php echo date('F Y'); ?></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div class="summary-card">
+                    <h4>Report ID</h4>
+                    <div class="value"><?php echo strtoupper(substr(md5(uniqid()), 0, 8)); ?></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Metrics -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h4>Total Vehicles</h4>
+                <div class="value" id="sum-total">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Tested</h4>
+                <div class="value" id="sum-tested">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Passed</h4>
+                <div class="value" id="sum-passed">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Failed</h4>
+                <div class="value" id="sum-failed">0</div>
+            </div>
+        </div>
+
+        <!-- Inspection Log -->
+        <div class="data-section">
+            <div class="section-title">
+                DETAILED INSPECTION LOG - <span id="out-month"></span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Vehicle No.</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Efficiency %</th>
+                        <th>Alarm %</th>
+                        <th>Speed (kph)</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="log-body">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            No inspection records added yet. Start by adding entries from the control panel.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light); font-size: 10px; color: var(--text-muted);">
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    <strong>Generated by:</strong> Industrial Report Pro v2.0<br>
+                    <strong>Timestamp:</strong> <span id="generation-time"><?php echo date('Y-m-d H:i:s'); ?></span>
+                </div>
+                <div style="text-align: right;">
+                    <strong>Confidential Document</strong><br>
+                    For authorized personnel only<br>
+                    Page 1 of 1
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script>
-        // ===================== DATABASE =====================
-        const gautengDatabase = [
-            {
-                id: 1,
-                name: "SIRCLE",
-                area: "Rosebank",
-                vibe: "Chic, Modern, High-Energy with stunning city views",
-                deal: "2-for-1 Signature Cocktails until 8PM • Sunset specials",
-                tip: "Corner booth #3 has the best Jozi skyline view. Arrive before 6PM for golden hour photos.",
-                price: "R180-280",
-                bestTime: "Weekdays 5-8PM, weekends for sunset",
-                crowd: "Fashion-forward professionals, influencer crowd",
-                tags: ["rooftop", "chic", "cocktails", "view", "trendy", "instagram"],
-                icon: "building",
-                popularity: "92%",
-                distance: "12-18 min"
-            },
-            {
-                id: 2,
-                name: "THE RADIUM",
-                area: "Orange Grove",
-                vibe: "Historical, Authentic Jazz, Old-School Cool",
-                deal: "R50 Draft Specials all night • Live jazz Sundays",
-                tip: "Oldest bar in Joburg. Ask bartender Mark for the secret history tour. Cash only.",
-                price: "R50-100",
-                bestTime: "Weekend afternoons, jazz nights",
-                crowd: "Locals, musicians, history lovers",
-                tags: ["budget", "historical", "jazz", "authentic", "live-music"],
-                icon: "music",
-                popularity: "86%",
-                distance: "20-25 min"
-            },
-            {
-                id: 3,
-                name: "ROCKET ROOFTOP",
-                area: "Sandton",
-                vibe: "Luxury, Exclusive, Panoramic Skyline Views",
-                deal: "2-for-1 Cocktails 4-7PM • Thursday Ladies Night",
-                tip: "Book 2 weeks ahead for weekend sunset spots. Dress code strictly enforced.",
-                price: "R200-350",
-                bestTime: "Weekday happy hours, Friday sunset",
-                crowd: "Finance professionals, luxury seekers",
-                tags: ["rooftop", "luxury", "cocktails", "trendy", "sandton"],
-                icon: "building",
-                popularity: "95%",
-                distance: "15-20 min"
-            }
-        ];
+<script>
+    // ===== Application State =====
+    let reportData = JSON.parse(localStorage.getItem('reportData')) || [];
+    let logoBase64 = localStorage.getItem('reportLogo') || "";
 
-        // ===================== UI STATE =====================
-        let currentSpot = null;
-        let currentResults = [];
+    // ===== Utility Functions =====
+    function showAlert(message, type = 'success', duration = 5000) {
+        const container = document.getElementById('alert-container');
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.innerHTML = `
+            ${type === 'success' ? '✓' : '✗'} ${message}
+            <button onclick="this.parentElement.remove()" style="margin-left: auto; background: none; border: none; cursor: pointer; font-size: 16px;">×</button>
+        `;
+        container.appendChild(alert);
+        setTimeout(() => alert.remove(), duration);
+    }
 
-        // ===================== UI FUNCTIONS =====================
-        function showLoading() {
-            document.getElementById('loading-indicator').classList.remove('hidden');
-            document.body.classList.add('no-scroll');
-        }
-
-        function hideLoading() {
-            document.getElementById('loading-indicator').classList.add('hidden');
-            document.body.classList.remove('no-scroll');
-        }
-
-        function setInput(text) {
-            const input = document.getElementById('user-input');
-            input.value = text;
-            input.focus();
-        }
-
-        function quickSearch(query) {
-            setInput(query);
-            processSearch();
-        }
-
-        function processSearch() {
-            const input = document.getElementById('user-input');
-            const query = input.value.trim();
-            
-            if (!query) {
-                // Add shake animation to input
-                input.parentElement.classList.add('scale-in');
-                setTimeout(() => input.parentElement.classList.remove('scale-in'), 300);
-                return;
-            }
-
-            // Hide search interface
-            document.getElementById('search-interface').style.opacity = '0';
-            document.getElementById('search-interface').style.transform = 'translateY(-20px)';
-            
-            setTimeout(() => {
-                document.getElementById('search-interface').classList.add('hidden');
-                showLoading();
-                
-                // Process after delay
-                setTimeout(() => {
-                    hideLoading();
-                    
-                    // For demo, always show a result
-                    const results = gautengDatabase.filter(spot => 
-                        query.toLowerCase().includes(spot.area.toLowerCase()) || 
-                        query.includes('rooftop') && spot.tags.includes('rooftop') ||
-                        query.includes('budget') && spot.tags.includes('budget') ||
-                        query.includes('date') && spot.tags.includes('trendy')
-                    );
-                    
-                    if (results.length > 0) {
-                        // Show single result
-                        showResultPanel(results[0]);
-                    } else {
-                        // Show SIRCLE as default
-                        showResultPanel(gautengDatabase[0]);
-                    }
-                }, 800);
-            }, 300);
-        }
-
-        function showResultPanel(spot) {
-            currentSpot = spot;
-            
-            // Set all content
-            document.getElementById('res-name').textContent = spot.name;
-            document.getElementById('res-area').textContent = spot.area;
-            document.getElementById('res-deal').textContent = spot.deal;
-            document.getElementById('res-vibe').textContent = spot.vibe;
-            document.getElementById('res-tip').textContent = spot.tip;
-            document.getElementById('res-distance').textContent = spot.distance + ' drive';
-            document.getElementById('res-icon').className = `fas fa-${spot.icon} text-6xl text-orange-500/40`;
-            
-            // Hide other interfaces
-            document.getElementById('search-interface').classList.add('hidden');
-            document.getElementById('results-interface').classList.add('hidden');
-            
-            // Prevent body scroll
-            document.body.classList.add('no-scroll');
-            
-            // Show result panel
-            const panel = document.getElementById('result-panel');
-            panel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-            panel.classList.add('opacity-100', 'scale-100');
-        }
-
-        function resetUI() {
-            const panel = document.getElementById('result-panel');
-            panel.classList.remove('opacity-100', 'scale-100');
-            panel.classList.add('opacity-0', 'scale-95');
-            
-            setTimeout(() => {
-                panel.classList.add('pointer-events-none');
-                document.body.classList.remove('no-scroll');
-                resetToSearch();
-            }, 300);
-        }
-
-        function resetToSearch() {
-            // Reset all interfaces
-            const searchInterface = document.getElementById('search-interface');
-            searchInterface.classList.remove('hidden');
-            searchInterface.style.opacity = '1';
-            searchInterface.style.transform = '';
-            
-            document.getElementById('results-interface').classList.add('hidden');
-            
-            // Clear input and focus
-            const input = document.getElementById('user-input');
-            input.value = '';
-            
-            // Scroll to top
-            document.getElementById('main-content').scrollTop = 0;
-        }
-
-        function shareCurrentSpot() {
-            if (!currentSpot) return;
-            
-            const shareText = `Check out ${currentSpot.name} in ${currentSpot.area}! ${currentSpot.deal}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: `${currentSpot.name} - Outgo Recommendation`,
-                    text: shareText
-                });
-            } else {
-                // Fallback
-                navigator.clipboard.writeText(shareText).then(() => {
-                    alert('Spot details copied!');
-                });
-            }
-        }
-
-        function saveCurrentSpot() {
-            if (!currentSpot) return;
-            
-            // Show temporary feedback
-            const button = event.currentTarget;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-            }, 2000);
-        }
-
-        function getDirections() {
-            if (!currentSpot) return;
-            
-            alert(`Opening directions to ${currentSpot.name} in ${currentSpot.area}...`);
-        }
-
-        function showAbout() {
-            document.getElementById('about-modal').classList.remove('hidden');
-            document.body.classList.add('no-scroll');
-        }
-
-        function hideAbout() {
-            document.getElementById('about-modal').classList.add('hidden');
-            document.body.classList.remove('no-scroll');
-        }
-
-        // ===================== EVENT LISTENERS =====================
-        const userInput = document.getElementById('user-input');
+    function updateStorageInfo() {
+        const dataSize = JSON.stringify(reportData).length;
+        const logoSize = logoBase64.length;
+        const totalKB = Math.round((dataSize + logoSize) / 1024);
         
-        userInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                processSearch();
-            }
+        document.getElementById('record-count').textContent = reportData.length;
+        document.getElementById('storage-used').textContent = `${totalKB}KB`;
+    }
+
+    function updateRecentEntries() {
+        const container = document.getElementById('recent-entries');
+        if (reportData.length === 0) {
+            container.innerHTML = `
+                <p style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px;">
+                    No entries yet. Add your first inspection record.
+                </p>
+            `;
+            return;
+        }
+
+        const recent = reportData.slice(-5).reverse();
+        container.innerHTML = recent.map(entry => `
+            <div style="background: white; padding: 8px; margin-bottom: 6px; border-radius: 4px; border: 1px solid var(--border-light); font-size: 11px; color: var(--text-dark);">
+                <strong style="color: var(--primary-yellow);">${entry.vNo}</strong> • ${entry.vDate} • ${entry.vTime}<br>
+                <span style="color: ${entry.vRem.includes('Pass') ? '#15803d' : '#b91c1c'}">
+                    ${entry.vEff}% • ${entry.vRem}
+                </span>
+            </div>
+        `).join('');
+    }
+
+    // ===== Core Functions =====
+    function handleLogo(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            showAlert('Logo must be less than 2MB', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            logoBase64 = e.target.result;
+            localStorage.setItem('reportLogo', logoBase64);
+            renderReport();
+            showAlert('Logo uploaded successfully');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function addRow() {
+        const vNo = document.getElementById('vNo').value.trim();
+        const vDate = document.getElementById('vDate').value;
+        const vEff = document.getElementById('vEff').value;
+        const vAlarm = document.getElementById('vAlarm').value || "0";
+        const vSpeed = document.getElementById('vSpeed').value || "0";
+        const vRem = document.getElementById('vRem').value;
+
+        if (!vNo || !vDate || !vEff) {
+            showAlert('Please fill in all required fields (Vehicle No., Date, Efficiency)', 'error');
+            return;
+        }
+
+        const row = {
+            id: Date.now(),
+            vNo: vNo.toUpperCase(),
+            vDate: vDate,
+            vTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            vEff: parseFloat(vEff).toFixed(1),
+            vAlarm: vAlarm,
+            vSpeed: vSpeed,
+            vRem: vRem,
+            timestamp: new Date().toISOString()
+        };
+
+        reportData.push(row);
+        localStorage.setItem('reportData', JSON.stringify(reportData));
+        
+        document.getElementById('vNo').value = '';
+        document.getElementById('vEff').value = '';
+        document.getElementById('vAlarm').value = '';
+        document.getElementById('vSpeed').value = '';
+        
+        renderReport();
+        showAlert('Inspection record added successfully');
+    }
+
+    function renderReport() {
+        document.getElementById('out-loc').textContent = document.getElementById('locName').value || 'Unnamed Site';
+        document.getElementById('out-manager').textContent = document.getElementById('managerName').value || 'Not specified';
+        document.getElementById('out-month').textContent = new Date().toLocaleString('default', { 
+            month: 'long', 
+            year: 'numeric' 
+        }).toUpperCase();
+        
+        document.getElementById('out-period').textContent = new Date().toLocaleString('default', { 
+            month: 'long', 
+            year: 'numeric' 
         });
 
-        // Close about modal when clicking outside
-        document.getElementById('about-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('about-modal')) {
-                hideAbout();
-            }
+        document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', month: 'long', day: 'numeric' 
         });
 
-        // Close result panel when clicking outside
-        document.getElementById('result-panel').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('result-panel')) {
-                resetUI();
-            }
+        const logoImg = document.getElementById('logo-preview');
+        if (logoBase64) {
+            logoImg.src = logoBase64;
+            logoImg.style.display = 'block';
+        } else {
+            logoImg.style.display = 'none';
+        }
+
+        let html = '';
+        let passed = 0;
+        let failed = 0;
+
+        reportData.forEach((data, index) => {
+            if (data.vRem.includes('Pass')) passed++;
+            else if (data.vRem.includes('Fail')) failed++;
+
+            const efficiency = parseFloat(data.vEff);
+            const effClass = efficiency >= 90 ? 'status-pass' : efficiency >= 80 ? '' : 'status-fail';
+
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${data.vNo}</strong></td>
+                    <td>${data.vDate}</td>
+                    <td>${data.vTime}</td>
+                    <td class="${effClass}">${data.vEff}%</td>
+                    <td>${data.vAlarm || '-'}%</td>
+                    <td>${data.vSpeed || '-'}</td>
+                    <td class="${data.vRem.includes('Pass') ? 'status-pass' : 'status-fail'}">
+                        ${data.vRem}
+                    </td>
+                </tr>
+            `;
         });
 
-        // Initialize
-        setTimeout(() => {
-            userInput.focus();
+        const tbody = document.getElementById('log-body');
+        if (reportData.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        No inspection records added yet. Start by adding entries from the control panel.
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = html;
+        }
+
+        document.getElementById('sum-total').textContent = reportData.length;
+        document.getElementById('sum-tested').textContent = reportData.length;
+        document.getElementById('sum-passed').textContent = passed;
+        document.getElementById('sum-failed').textContent = failed;
+
+        document.getElementById('generation-time').textContent = new Date().toLocaleString();
+
+        updateStorageInfo();
+        updateRecentEntries();
+    }
+
+    function clearData() {
+        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+            reportData = [];
+            localStorage.clear();
+            showAlert('All data cleared successfully');
+            renderReport();
+        }
+    }
+
+    // ===== Export Functions =====
+    async function downloadPDF() {
+        try {
+            showAlert('Generating PDF...', 'success');
             
-            // Add floating animations
-            const floaters = document.querySelectorAll('.floating');
-            floaters.forEach((floater, index) => {
-                floater.style.animationDelay = `${index * 0.5}s`;
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('report-content');
+            
+            element.style.boxShadow = 'none';
+            element.style.borderRadius = '0';
+            
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
             });
             
-            // Fix for iOS Safari
-            document.body.style.height = window.innerHeight + 'px';
-        }, 100);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+            
+            element.style.boxShadow = '';
+            element.style.borderRadius = '';
+            
+            const fileName = `${document.getElementById('locName').value || 'report'}_${new Date().toISOString().slice(0,10)}.pdf`;
+            pdf.save(fileName);
+            
+            showAlert('PDF downloaded successfully');
+        } catch (error) {
+            showAlert('Error generating PDF: ' + error.message, 'error');
+        }
+    }
 
-        // Handle orientation changes
-        window.addEventListener('resize', () => {
-            document.body.style.height = window.innerHeight + 'px';
+    function downloadExcel() {
+        if (reportData.length === 0) {
+            showAlert('No data to export', 'error');
+            return;
+        }
+
+        try {
+            const exportData = reportData.map((row, index) => ({
+                '#': index + 1,
+                'Vehicle No.': row.vNo,
+                'Date': row.vDate,
+                'Time': row.vTime,
+                'Efficiency %': row.vEff,
+                'Alarm %': row.vAlarm,
+                'Speed (kph)': row.vSpeed,
+                'Remarks': row.vRem
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inspection_Data");
+            
+            const wscols = [
+                { wch: 5 },
+                { wch: 15 },
+                { wch: 12 },
+                { wch: 8 },
+                { wch: 12 },
+                { wch: 10 },
+                { wch: 10 },
+                { wch: 20 }
+            ];
+            ws['!cols'] = wscols;
+
+            const fileName = `${document.getElementById('locName').value || 'inspection'}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showAlert('Excel file exported successfully');
+        } catch (error) {
+            showAlert('Error exporting to Excel: ' + error.message, 'error');
+        }
+    }
+
+    function printReport() {
+        const printContent = document.getElementById('report-content').innerHTML;
+        const originalContent = document.body.innerHTML;
+        
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+        renderReport();
+    }
+
+    // ===== Initialize Application =====
+    function initApp() {
+        document.getElementById('vDate').valueAsDate = new Date();
+        
+        renderReport();
+        
+        ['locName', 'managerName'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                localStorage.setItem(id, document.getElementById(id).value);
+            });
         });
-    </script>
+        
+        ['locName', 'managerName'].forEach(id => {
+            const saved = localStorage.getItem(id);
+            if (saved) document.getElementById(id).value = saved;
+        });
+        
+        showAlert('Industrial Report Pro v2.0 loaded successfully');
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+</script>
 </body>
 </html>
